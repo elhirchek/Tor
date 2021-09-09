@@ -6,12 +6,11 @@ class WebSite:
     def __init__(self,url:str = None,name:str = None):
         
         self.url = f"{url}{name}"
-        self.name = name
-        res = requests.get(self.url).content
+        if name != "None" or name == "-h" or name == "--help":res = requests.get(self.url).content
         self.soup = bs(res,'lxml')
         self.names = []
         self.magnet = []
-        self.num:int = None
+        self.num:str = None
         
     def mag(self):
         
@@ -26,8 +25,8 @@ class WebSite:
     def download(self):
         subprocces.run(['aria2c',f'{self.mag()}'],shell=True)
 
-    def help(self):
-       if self.name == "-h" or self.name == "--help":
+#help
+if sys.argv[-1] == "-h" or sys.argv[-1] == "--help":
            print(
            """tor [website] [options] [names]
            [website]
@@ -42,11 +41,8 @@ class WebSite:
            tor -t -s game.of.thrones
            """
            )
+           sys.exit(0)
 #help
-if sys.argv[-1] == "-h" or sys.argv[-1] == "--help":
-
-    WebSite().help() 
-
 #nyaa.si
 nyaa = WebSite("https://nyaa.si/?f=0&c=0_0&q=",f"{sys.argv[-1]}")
 nyaa.names = [i.text for i in nyaa.soup.find_all("a",title=True) if not str(i.text).startswith('\n')]
