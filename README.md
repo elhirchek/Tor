@@ -14,7 +14,7 @@ A minimalist cli for stream torrent or get magnet link.
 - Pip
 - Nuitka for compilation (optional)
 - Mpv for stream (optional)
-> Note: For window source code installation you will need MinGw64.
+> Note: For windows source code installation you will need MinGw64.
 #### From source code
 - Linux or Windows
 ```bash
