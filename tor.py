@@ -1,8 +1,14 @@
-import sys,requests,subprocess
+# Standard Library
+import sys
+import subprocess
+import re
+
+# Third Party Library
+import requests
 from rich import print
 from bs4 import BeautifulSoup as bs
 
-#Website
+# Website
 
 class WebSite:
     
@@ -21,9 +27,9 @@ class WebSite:
 
     def prin_t(self,n:int):
 
-        j =int(0)
+        j =int(0) 
         for x,i in enumerate(self.names):
-            print(f"[blue]{x} ==> {i.string}[/blue]") 
+            print(f"[blue]{x} ==> {i.sting}[/blue]") 
             while j != "t":
                 print(self.info[j:j+n])
                 j+=n
@@ -43,9 +49,9 @@ class WebSite:
     # def download(self):
     #     subprocces.run(['aria2c',f'{self.mag()}'],shell=True)
 
-#Website
+# Website
 
-#help
+# help
 
 if sys.argv[-1] == "-h" or sys.argv[-1] == "--help" or len(sys.argv) == 1:
     print(
@@ -58,6 +64,7 @@ Tor
     -n --> nyaa.si
     -t --> torrentGalaxy
     -r --> rarbg
+    -e --> eztv
 
     *options:
     -s --> for stream using mpv and webtorrent
@@ -71,9 +78,9 @@ Tor
 )
     sys.exit()
 
-#help
+# help
 
-#rarbg
+# rarbg
 
 if "-r" in sys.argv:
 
@@ -89,8 +96,9 @@ if "-r" in sys.argv:
     elif "-s" in sys.argv:
         rarbg.stream()
 
-#rarbg
-#nyaa.si
+# rarbg
+
+# nyaa.si
 
 if "-n" in sys.argv:
 
@@ -106,9 +114,9 @@ if "-n" in sys.argv:
     elif "-s" in sys.argv:
         nyaa.stream()
 
-#nyaa.si
+# nyaa.si
 
-#torrentGalaxy
+# torrentGalaxy
 
 if "-t" in sys.argv:
     
@@ -124,4 +132,24 @@ if "-t" in sys.argv:
     elif "-s" in sys.argv:
         torrent_galaxy.stream()
     
-#torrentGalaxy
+# torrentGalaxy
+
+# eztv
+if '-e' in sys.argv:
+    eztv = WebSite("https://eztv.re/search/",f"{sys.argv[-1]}")
+    eztv.soup_()
+    eztv.names = [i for i in eztv.soup.find_all('a',href=True,title=True,class_='magnet')]
+    for x,i in enumerate(eztv.names):print(f"{x}=>{i.get('title')}")
+    eztv.num = int(input("enter the number:"))
+    if "-m" in sys.argv:
+        print(f"[blue]{eztv.names[eztv.num].get('href')}[/blue]")
+
+# Subscene
+
+if "-S" in sys.argv:
+
+    SubSence = requests.get("https://subscene.com/subtitles/searchbytitle",params={"query":sys.argv[-1]}).content
+    Sub_Soup = bs(SubSence,"html.parser")
+    Sub_Names = [i for i in Sub_Soup.find_all('a',href=True) if str(i.get('href')).startswith('/subtitles') ]
+    for i in Sub_Names:
+        print(i.text)

@@ -1,6 +1,9 @@
 # Tor
 A minimalist cli for stream torrent or get magnet link.
 
+## New Website
+- Adding EZTV
+
 ## Pros
 
 - Easy to use.
@@ -19,17 +22,10 @@ A minimalist cli for stream torrent or get magnet link.
 - Linux or Windows
 ```bash
 git clone https://github.com/yassin-l/tor && cd tor
-pip install requirements.txt 
+pip install -r requirements.txt 
 python -m nuitka --onefile -o tor tor.py
 # this line work only for linux
 sudo ln ./tor /usr/bin/tor
-```
-#### For binary install
-- Linux or Windows
-```bash
-npm install tor-cli -g
-#or 
-yarn install tor-cli -g
 ```
 ## 2.Usage
 ```bash
@@ -43,6 +39,7 @@ Tor
    -n --> nyaa.si
    -t --> torrentGalaxy
    -r --> rarbg
+   -e --> eztv
    
    *options:
    -s --> for stream using mpv and webtorrent
