@@ -1,22 +1,35 @@
 # Tor
-A minimalist cli for stream torrent or get magnet link.
+A minimalist cli for surf/stream torrent or get magnet link
 
-## New Website
-- Adding EZTV
+___
+
+![preview](Preview.gif)
+
+## Supported Websites
+
+* Rarbg
+* Nyaa
+* TorrentGalaxy
+* Eztv
+* 1337x
+
 
 ## Pros
 
 - Easy to use.
 - Faster way to surf torrent.
 - Easy to set up: singel file.
+- No ads.
 
 ## 1.Installation 
 
 #### Dependencies
+
 - Python 3
 - Pip
 - Nuitka for compilation (optional)
-- Mpv for stream (optional)
+- Mpv/peerflix for stream (optional)
+
 > Note: For windows source code installation you will need MinGw64.
 #### From source code
 - Linux or Windows
@@ -71,3 +84,8 @@ tor -r -m breaking.bad #print resault of search
 10 ==> El.Camino.A.Breaking.Bad.Movie.2019.1080p.WEBRip.x264-WOW
 ['Movies/HD', '2020-11-14 11:03:56', '1.8 GB', '7\n', '1', 'jalim']
 ```
+
+### Task List
+
+- [ ] add The Pirate Bay
+- [ ] add check stage for dependencies
