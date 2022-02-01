@@ -2,6 +2,8 @@
 import sys
 import subprocess
 import re
+import os
+import zipfile
 
 # Third Party Library
 import requests
@@ -205,29 +207,35 @@ if "-x" in sys.argv:
 
 # Subscene
 
-#if "-S" in sys.argv:
-#
-#    sub = WebSite('https://subscene.com','/subtitles/searchbytitle')
-#    sub.soup_('query')
-#    sub.names = [i for i in sub.soup.find_all('a',href=True) if str(i.get('href')).startswith('/subtitles') ]
-#    sub.check_resault()
-#    sub.prin_t()
-#    sub.num = int(input("enter the number:"))
-#    sub.soup_('scend')
-#    sub.names = [i for i in sub.soup.find_all('a',href=True) if str(i.get('href')).startswith('/subtitles') ]
-#    #lang = [i.span.text[8:i.span.text.index(re.search(r'\w\r\n',i.span.text).group())+1] for i in sub.names ]
-#    #name = [i.span.find_next_sibling('span').text[8:i.span.find_next_sibling('span').text.index(re.search(r'\w \r\n',i.span.find_next_sibling('span').text).group())+1] for i in sub.names]
-#    #g = sub.names[0].span.find_next_sibling('span').text
-#    #name = g[8:g.index(re.search(r'\w\r\n',g).group())+1]
-#    print(repr(sub.names))
-#    #name = re.search(r'\w \r\n',g)
-#    print(name)
-#    #for i in sub.names:print(i.span.text.index('e\r\n\t\t\t\t'))
-#    #for i in sub.names:print(i.span.text[8:i.span.text.index('e\r')])
-#    #for i in sub.names:print(i.span.text[8:i.span.text.index(r'\r')],"-->",i.span.find_next('span').text[i.span.text.index(r'\r\n\t\t\t\t\t\t'):i.span.find_next('span').text.index(r'\r')])
-#    #'\n\r\n\t\t\t\t\t\tBurmese\r\n\t\t\t\t\t\n\r\n\t\t\t\t\t\tWho Is Sinner? Sung by SOPA Students \r\n\t\t\t\t\t\n'
+if "-S" in sys.argv:
+
+    sub = WebSite('https://subscene.com','/subtitles/searchbytitle')
+    sub.soup_('query')
+    sub.names = [i for i in sub.soup.find_all('a',href=True) if str(i.get('href')).startswith('/subtitles') ]
+    sub.check_resault()
+    sub.prin_t()
+    sub.num = int(input("enter the number:"))
+    sub.soup_('scend')
+    get_url =  sub.names[sub.num].get('href')
+    sub.names = [i for i in sub.soup.find_all('a',href=True) if str(i.get('href')).startswith(f'{get_url}') ] #/arabic
+    lang = [i.span.text[8:i.span.text.index(re.search(r'\w\r\n',i.span.text).group())+1] for i in sub.names ]
+    name = [i.span.find_next_sibling('span').text[8:i.span.find_next_sibling('span').text.index(re.search(r' \r\n',i.span.find_next_sibling('span').text).group())+1] for i in sub.names]
+    for x,i in enumerate(zip(lang,name)):
+        print(x,"]",i[0],"-->",i[1])
+    sub.num = int(input('enter num:'))
+    sub.soup_('scend')
+    d_url = [i.get('href') for i in sub.soup.find_all('a',class_='button positive') if str(i.get('href')).startswith('/subtitles')]
+    down_link = "https://subscene.com" + d_url[0]
+    down_sub = requests.get(down_link,stream =True).content
+    with open('sub.zip','wb') as f:
+        f.write(down_sub)
+    with zipfile.ZipFile('sub.zip', "r") as f:
+        f.extractall()
+    os.remove('sub.zip')
+    print('done')
+
 #
 ## Func Mian
 #
-#def main():
-#    pass
+#if __name__ == '__main__':
+#    main()

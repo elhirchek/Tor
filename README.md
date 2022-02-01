@@ -12,6 +12,7 @@ ___
 * TorrentGalaxy
 * Eztv
 * 1337x
+* subscence
 
 
 ## Pros
@@ -87,5 +88,6 @@ tor -r -m breaking.bad #print resault of search
 
 ### Task List
 
+- [X] add subscene
 - [ ] add The Pirate Bay
 - [ ] add check stage for dependencies
