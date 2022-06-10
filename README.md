@@ -7,61 +7,50 @@ ___
 
 ## Supported Websites
 
-* Rarbg
+* 1337x 
 * Nyaa
 * TorrentGalaxy
 * Eztv
-* 1337x
-* subscence
+* ~~Rarbg~~
+* ~~subscence~~ (use [submpv](https://github.com/yassin-l/submpv))
 
-
-## Pros
-
-- Easy to use.
-- Faster way to surf torrent.
-- Easy to set up: singel file.
-- No ads.
-
-## 1.Installation 
+## 1. Installation 
 
 #### Dependencies
 
 - Python 3
 - Pip
 - Nuitka for compilation (optional)
-- Mpv/peerflix for stream (optional)
+- ~~Mpv/peerflix for stream (optional)~~
 
 > Note: For windows source code installation you will need MinGw64.
-#### From source code
-- Linux or Windows
+### Linux or Windows
 ```bash
 git clone https://github.com/yassin-l/tor && cd tor
-pip install -r requirements.txt 
-python -m nuitka --onefile -o tor tor.py
-# this line work only for linux
-sudo ln ./tor /usr/bin/tor
-```
-## 2.Usage
-```bash
-tor -h or --help #for help
 
-Tor
-   *usage:
-   tor website options names
-   
-   *website:
-   -n --> nyaa.si
-   -t --> torrentGalaxy
-   -r --> rarbg
-   -e --> eztv
-   
-   *options:
-   -s --> for stream using mpv and webtorrent
-   -m --> return magnet_link
-   -d --> downlaod torrent using aria2 #still in dev
+pip install -r requirements.txt 
+
+# To add tor to your path env
+ln ./tor /usr/bin/tor
 ```
+> Note: change `default_webiste = "1337x"` to you're most used website instead of typing it everytime
+##### For Compiling (it's optional)
+> python -m nuitka --onefile -o tor tor.py 
+## 2. Usage
 ```bash
-tor -r -m breaking.bad #print resault of search
+usage: tor [-h] [-w website] name
+
+positional arguments:
+  name        Movie/Anime/Tvshow
+
+options:
+  -h, --help  show this help message and exit
+  -w website  available website to query from: ['nyaa', 'torrentglaxy', 'eztv',
+              '1337x']
+```
+### Example
+```bash
+tor -w1337x "breaking.bad" 
 0 ==> Breaking Bad Season 2 Complete (1080p)
 ['TV/HD', '2021-09-20 11:03:34', '9.2 GB', '0\n', '0', 'eluway']
 1 ==> Breaking Bad Season 3 Complete (1080p)
@@ -88,6 +77,6 @@ tor -r -m breaking.bad #print resault of search
 
 ### Task List
 
-- [X] add subscene
+- [X] ~~add subscene~~
 - [ ] add The Pirate Bay
 - [ ] add check stage for dependencies
