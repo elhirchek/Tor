@@ -11,62 +11,10 @@ import requests
 from rich import print
 from bs4 import BeautifulSoup as bs
 
+
 # default website
 
 default_website = "1337x"
-
-# Website
-
-class WebSite:
-    
-    def __init__(self,url:str = None,name:str = None):
-        
-        self.url = f"{url}{name}"
-        self.s_url = f"{url}"
-        self.names = []
-        self.info = []
-        self.soup = None
-        self.headers = {
-                "User-Agent" : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.2 Chrome/87.0.4280.144 Safari/537.36',
-                }
-        
-    def scrape(self,url):
-
-        request = requests.get(f"{url}",headers=self.headers)
-        if request.status_code != 200:print('error in connection try agian');sys.exit(0)
-        self.soup = bs(request.content,'html.parser') 
-        return self.soup
-
-    def prin_t(self,steps:list[int] = [0,0,0]):
-
-        if not self.names:print('No results were returned. Please refine your search.');sys.exit(0)
-
-        os.system('cls' if os.name == 'nt' else 'clear')
-        for x,i in enumerate(self.names):
-
-            # Print Names
-            print(f"[blue]{x} ==> {i.text}[/blue]") 
-
-            # Print Info
-            if not self.info:continue
-            print(f"[green]{self.info[steps[0]:steps[0]+steps[1]]}[/green]")
-            steps[0]+=steps[1]+steps[2]
-
-    def magnet(self):
-
-        self.scrape(self.s_url)
-        self.magnet = [i.get('href') for i in self.soup.find_all('a',href=True) if str(i.get('href')).startswith('magnet')]
-        return self.magnet[0]
-
-    def stream(self,player,streamer):
-        
-        subprocess.run([f"{streamer} --{player} \"{self.magnet[0]}\""],shell=True)
-    
-    def download(self):
-        subprocess.run([f'aria2c\"{self.magnet[0]}\"'],shell=True)
-
-    # def silent_mode(self):
-    #
 
 # help
 
@@ -77,8 +25,6 @@ parser = argparse.ArgumentParser(prog='tor',)
 parser.add_argument('-w',dest='website',metavar='website',default=f"{default_website}",help=f'available website to query from: {provider_list}')
 parser.add_argument('name',help='Movie/Anime/Tvshow')
 args=parser.parse_args()
-
-# Website
 
 provider = {
         'nyaa': # nyaa
@@ -143,7 +89,7 @@ provider = {
             ],
         '1337x': # 1337x
             [
-                'https://1337x.wtf',
+                'https://1337x.to',
                 f"/search/{args.name}/1/",
                 [
                     {'href':True},
@@ -158,24 +104,77 @@ provider = {
             ],
         }
 
+# Website
+
+class WebSite:
+    
+    def __init__(self,*,url:str,name:str):
+        
+        self.searchUrl = f"{url}{name}"
+        self.websiteUrl = url
+        self.headers = {
+                "User-Agent" : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.2 Chrome/87.0.4280.144 Safari/537.36',
+                }
+        
+    def scrape(self,url:str = None):
+
+        if not url: url = self.searchUrl
+        request = requests.get(f"{url}",headers=self.headers)
+        if request.status_code != 200:print('error in connection try agian');sys.exit(0)
+        self.soup = bs(request.content,'html.parser') 
+        return self
+
+    def prin_t(self,steps:list[int] = [0,0,0]):
+
+        if not self.names:print('No results were returned. Please refine your search.');sys.exit(0)
+
+        os.system('cls' if os.name == 'nt' else 'clear')
+        for x,i in enumerate(self.names):
+
+            # Print Names
+            print(f"[blue]{x} ==> {i.text}[/blue]") 
+
+            # Print Info
+            if not self.info:continue
+            print(f"[green]{self.info[steps[0]:steps[0]+steps[1]]}[/green]")
+            steps[0]+=steps[1]+steps[2]
+
+        return self
+
+    def magnet(self,url:str):
+
+        url = f"{self.websiteUrl}{url}"
+        self.scrape(url)
+        self.magnet = [i.get('href') for i in self.soup.find_all('a',href=True) if str(i.get('href')).startswith('magnet')]
+
+    # def stream(self,player,streamer):
+        
+    #     subprocess.run([f"{streamer} --{player} \"{self.magnet[0]}\""],shell=True)
+    
+    # def download(self):
+    #     subprocess.run([f'aria2c\"{self.magnet[0]}\"'],shell=True)
+
+    # def silent_mode(self):
+    #
+
+
+
 def main():
 
     # instance of website object
-    website = WebSite(provider[args.website][0],provider[args.website][1])
-    # scrape provider website with search name
-    website.scrape(website.url)
+    website = WebSite(url=provider[args.website][0],name=provider[args.website][1]).scrape()
     # filter names only
     website.names =  [i for i in website.soup.find_all('a',provider[args.website][2][0]) if not provider[args.website][2][1](i)]
     # filter infoes like size seeds ...
     website.info = [i.text for i in website.soup.find_all(provider[args.website][3][0],provider[args.website][3][1]) if not provider[args.website][3][2](i)]
     # custom print
-    website.prin_t(provider[args.website][-1])
-    # take choice number
-    website.s_url += website.names[int(input('enter the number:'))].get('href')
+    website.prin_t(provider[args.website][-1]).magnet(website.names[int(input('enter the number:'))].get('href'))
     # default behavior is printing magnet link
-    website.magnet()
     print(website.magnet[0])
     sys.exit(0)
 
 if __name__ == '__main__':
-    main()
+    try:
+      main()
+    except KeyboardInterrupt:
+      sys.exit(0)
